@@ -4,7 +4,7 @@
   "description": "Aprendiendo NodeJS, express y Sequelize",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon server"
   },
   "author": "Luis Eduardo Alcantara Olvera",
   "license": "ISC",
