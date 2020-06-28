@@ -3,6 +3,11 @@ const express = require('express');
 const path = require('path');
 const routes = require('./routes');
 const configs = require('./config')
+const db = require('./config/database');
+
+db.authenticate()
+    .then(() => console.log('se conecto bien'))
+    .catch(error => console.log(error));
 
 // Configurar express
 const app = express();
