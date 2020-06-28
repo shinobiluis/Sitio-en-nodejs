@@ -12,7 +12,7 @@ const Viaje = db.define('viaje',{
     precio:{
         type: Sequelize.STRING
     },
-    fecha_id:{
+    fecha_ida:{
         type: Sequelize.DATE
     },
     fecha_vuelta:{
