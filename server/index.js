@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const routes = require('./routes');
 const configs = require('./config')
+const bodyParser = require('body-parser');
 
 // Configurar express
 const app = express();
@@ -22,8 +23,12 @@ app.use((req, res, next)=>{
     // crear una nueva fecha;
     const fecha = new Date();
     res.locals.fechaActual = fecha.getFullYear();
+    res.locals.ruta = req.path;
+    console.log(res.locals)
     return next();
 });
+// ejecutamos el body parser
+app.use(bodyParser.urlencoded({extended: true}));
 // cacar ls rutas
 app.use('/', routes());
 // especificamos el puerto

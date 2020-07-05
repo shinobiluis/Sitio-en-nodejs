@@ -1,10 +1,27 @@
 const express = require('express');
 const router = express.Router();
 const Viaje = require('../models/Viajes');
+const Testimonial = require('../models/Testimoniales');
 
 module.exports = function(){
     router.get('/', (req, res) => {
-        res.render("index");
+        const promises = [];
+        promises.push(Viaje.findAll({
+            limit: 3
+        }));
+        promises.push(Testimonial.findAll({
+            limit: 3
+        }))
+        // Pasar el promise y ejecutarlo
+        const resultado = Promise.all(promises);
+
+        resultado.then(resultado => res.render("index", { 
+            pagina: 'Proximos viajes',
+            clase: 'home',
+            viajes: resultado[0],
+            testimoniales: resultado[1]
+        }))
+        .catch(error => console.log(error));
     });
     
     router.get('/nosotros', (req, res) => {
@@ -33,5 +50,47 @@ module.exports = function(){
             .catch(error => console.log(error));
     });
 
+    router.get('/testimoniales', (req, res) => {
+        Testimonial.findAll()
+            .then(testimoniales => res.render('testimoniales', {
+                pagina: 'Testimoniales',
+                testimoniales
+            }))
+    });
+    
+    router.post('/testimoniales', (req, res) => {
+        // console.log(req.body);
+        let {nombre, correo, mensaje} = req.body;
+        // validamos campos llenos
+        let errores = [];
+        if (!nombre) {
+            errores.push({'mensaje': 'Agrega tu Nombre'});
+        }
+        if (!correo) {
+            errores.push({'mensaje': 'Agrega tu corre'});
+        }
+        if (!mensaje) {
+            errores.push({'mensaje': 'Agrega tu mensaje'});
+        }
+        // revisar por errores
+        if (errores.length > 0) {
+            // muestra la vista  con errores
+            res.render('testimoniales', {
+                errores,
+                nombre,
+                correo,
+                mensaje
+            })
+        } else {
+            Testimonial.create({
+                nombre,
+                correo,
+                mensaje
+            })
+                .then(testimonial => res.redirect('/testimoniales'))
+                .catch(error => console.log(error));
+
+        }
+    })
     return router;
 }
